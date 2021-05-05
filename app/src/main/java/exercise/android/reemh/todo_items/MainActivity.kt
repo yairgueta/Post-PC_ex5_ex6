@@ -43,12 +43,16 @@ class MainActivity : AppCompatActivity() {
             if (it.isDone) holder!!.markItemInProgress(it)
             else holder!!.markItemDone(it)
         }
+        adapter.onClearBtnClickListener = {
+            holder!!.deleteItem(it)
+        }
 
 
     }
 
     class TodoAdapter(private var todoItemsHolder: TodoItemsHolder) : RecyclerView.Adapter<TodoItemsViewHolder>() {
         var onStatusImageClickListener: ((TodoItem) -> Unit)? = null
+        var onClearBtnClickListener: ((TodoItem) -> Unit)? = null
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoItemsViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.row_todo_item, parent, false)
@@ -59,8 +63,14 @@ class MainActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: TodoItemsViewHolder, position: Int) {
             val todoItem: TodoItem = todoItemsHolder.get(position)
             holder.updateView(todoItem)
-            holder.setStatusImageOnClickListener{ v ->
+
+            holder.setStatusImageOnClickListener{
                 onStatusImageClickListener?.invoke(todoItem)
+                notifyDataSetChanged()
+            }
+
+            holder.setClearButtonOnClickListener{
+                onClearBtnClickListener?.invoke(todoItem)
                 notifyDataSetChanged()
             }
         }
@@ -74,6 +84,7 @@ class MainActivity : AppCompatActivity() {
     class TodoItemsViewHolder(view: View) : RecyclerView.ViewHolder(view){
         private var descriptionTextView : TextView = view.findViewById(R.id.todoDescription)
         private var statusImage : ImageButton = view.findViewById(R.id.statusImage)
+        private var clearBtn : ImageButton = view.findViewById(R.id.todoClearBtn)
 
         fun setInProgress(){
             descriptionTextView.paintFlags = descriptionTextView.paintFlags and (Paint.STRIKE_THRU_TEXT_FLAG.inv())
@@ -92,6 +103,10 @@ class MainActivity : AppCompatActivity() {
 
         fun setStatusImageOnClickListener(l: View.OnClickListener){
             statusImage.setOnClickListener(l)
+        }
+
+        fun setClearButtonOnClickListener(l: View.OnClickListener){
+            clearBtn.setOnClickListener(l)
         }
     }
 

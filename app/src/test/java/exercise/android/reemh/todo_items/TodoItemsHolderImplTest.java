@@ -18,5 +18,7 @@ public class TodoItemsHolderImplTest extends TestCase {
     assertEquals(1, holderUnderTest.getCurrentItems().size());
   }
 
+
+
   // TODO: add at least 10 more tests to verify correct behavior of your implementation of `TodoItemsHolderImpl` class
 }

@@ -5,17 +5,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="40dp">
+    android:minHeight="@dimen/row_todo_item_height">
 
     <ImageButton
         android:id="@+id/statusImage"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/row_todo_item_height"
+        android:layout_height="@dimen/row_todo_item_height"
         android:background="#00000000"
-        android:cropToPadding="true"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/checkbox_off_background"
@@ -24,11 +22,29 @@
 
     <TextView
         android:id="@+id/todoDescription"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        tools:text="@tools:sample/lorem"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-condensed"
+        android:maxLines="1"
+        android:textAlignment="viewStart"
+        android:textColor="@color/black"
+        android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/todoClearBtn"
         app:layout_constraintStart_toEndOf="@+id/statusImage"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@tools:sample/lorem[1]" />
+
+    <ImageButton
+        android:id="@+id/todoClearBtn"
+        android:layout_width="@dimen/row_todo_item_height"
+        android:layout_height="@dimen/row_todo_item_height"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:src="@drawable/ic_round_clear_24"
+
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
