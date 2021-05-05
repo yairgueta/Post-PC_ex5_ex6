@@ -10,6 +10,8 @@ class TodoItem (var isDone: Boolean, val description: String) : Serializable, Co
 
     constructor(description: String) : this(false, description)
 
+    constructor() : this(false, "")
+
     override fun compareTo(other: TodoItem): Int {
         return (if (this.isDone) 100 else 0) - (if (other.isDone) 100 else 0) + (if (other.id - this.id> 0) 1 else -1)
     }

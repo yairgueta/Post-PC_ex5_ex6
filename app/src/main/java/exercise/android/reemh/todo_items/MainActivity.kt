@@ -16,6 +16,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class MainActivity : AppCompatActivity() {
     val ITEM_HOLDER_BUNDLE_KEY = "todo_item_holder"
 
+    @JvmField
     var holder: TodoItemsHolder? = null
     var recyclerTodoItems: RecyclerView? = null
     var addTaskField: EditText? = null
@@ -111,12 +112,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setCreateItemButtonListener() {
-        createItemButton!!.setOnClickListener { v ->
+        createItemButton!!.setOnClickListener {
             val input = addTaskField!!
-            if (input.text.isEmpty()) {
-                println(holder!!.currentItems.sorted())
-                return@setOnClickListener
-            }
+            if (input.text.isEmpty()) return@setOnClickListener
             holder!!.addNewInProgressItem(input.text.toString())
             recyclerTodoItems!!.adapter!!.notifyDataSetChanged()
             input.setText("")

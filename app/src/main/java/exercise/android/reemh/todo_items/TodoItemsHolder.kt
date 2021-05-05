@@ -5,7 +5,7 @@ import java.util.*
 
 interface TodoItemsHolder {
     /** Get a copy of the current items list  */
-    val currentItems: MutableList<TodoItem>
+    fun getCurrentItems(): MutableList<TodoItem>
 
     /**
      * Creates a new TodoItem and adds it to the list, with the @param description and status=IN-PROGRESS

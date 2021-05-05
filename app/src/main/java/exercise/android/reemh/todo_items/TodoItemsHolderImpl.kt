@@ -6,8 +6,12 @@ import androidx.recyclerview.widget.SortedList
 import java.io.Serializable
 import java.util.*
 
-class TodoItemsHolderImpl() : TodoItemsHolder {
-    override val currentItems: MutableList<TodoItem> = mutableListOf()
+class TodoItemsHolderImpl : TodoItemsHolder {
+    private val currentItems: MutableList<TodoItem> = mutableListOf()
+
+    override fun getCurrentItems(): MutableList<TodoItem> {
+        return currentItems.toMutableList()
+    }
 
     private fun findInList(item: TodoItem): TodoItem? = currentItems.find{ other -> item == other}
 
@@ -41,7 +45,7 @@ class TodoItemsHolderImpl() : TodoItemsHolder {
     }
 
     override fun saveInstance(): Serializable {
-        return currentItems as Serializable
+        return currentItems.toMutableList() as Serializable
     }
 
     override fun loadInstance(old: Serializable) {
