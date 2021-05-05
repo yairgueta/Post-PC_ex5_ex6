@@ -40,8 +40,11 @@
         android:id="@+id/recyclerTodoItemsList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonCreateTodoItem"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        tools:itemCount="23"
+        tools:listitem="@layout/row_todo_item"
+        android:layout_margin="8dp"/>
 
     <!--TODO:
          There is a UI bug.
