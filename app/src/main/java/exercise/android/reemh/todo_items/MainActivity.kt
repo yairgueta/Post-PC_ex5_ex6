@@ -2,9 +2,11 @@ package exercise.android.reemh.todo_items
 
 import android.graphics.Paint
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -16,39 +18,77 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class MainActivity : AppCompatActivity() {
     val ITEM_HOLDER_BUNDLE_KEY = "todo_item_holder"
 
-    @JvmField
-    var holder: TodoItemsHolder? = null
-    var recyclerTodoItems: RecyclerView? = null
-    var addTaskField: EditText? = null
-    var createItemButton: FloatingActionButton? = null
+//    @JvmField
+    lateinit var holder: TodoItemsHolder
+    lateinit var recyclerTodoItems: RecyclerView
+    lateinit var addTaskField: EditText
+    lateinit var createItemButton: FloatingActionButton
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-        if (holder == null) {
-            holder = TodoItemsHolderImpl()
-        }
+        holder = TodoItemsHolderImpl()
         recyclerTodoItems = findViewById(R.id.recyclerTodoItemsList)
         addTaskField = findViewById(R.id.editTextInsertTask)
         createItemButton = findViewById(R.id.buttonCreateTodoItem)
 
+        makeTaskFieldResponseToDone()
         setCreateItemButtonListener()
 
-        recyclerTodoItems!!.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
-        val adapter = TodoAdapter(holder!!)
-        recyclerTodoItems!!.adapter = adapter
+        recyclerTodoItems.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        val adapter = TodoAdapter(holder)
+        recyclerTodoItems.adapter = adapter
         adapter.onStatusImageClickListener = {
-            if (it.isDone) holder!!.markItemInProgress(it)
-            else holder!!.markItemDone(it)
+            when (it.isDone){
+                true -> {
+                    val (s,t) = holder.markItemInProgress(it)
+                    adapter.notifyItemMoved(s, t)
+                    adapter.notifyItemChanged(t)
+                }
+                false -> {
+                    val (s,t) = holder.markItemDone(it)
+                    adapter.notifyItemMoved(s, t)
+                    adapter.notifyItemChanged(t)
+                }
+            }
         }
         adapter.onClearBtnClickListener = {
-            holder!!.deleteItem(it)
+            val i = holder.deleteItem(it)
+            adapter.notifyItemRemoved(i)
         }
 
 
+    }
+
+    private fun setCreateItemButtonListener() {
+        createItemButton.setOnClickListener {
+            val input = addTaskField
+            if (input.text.isEmpty()) return@setOnClickListener
+            holder.addNewInProgressItem(input.text.toString())
+            recyclerTodoItems.adapter!!.notifyItemInserted(0)
+            input.setText("")
+        }
+    }
+
+    private fun makeTaskFieldResponseToDone() {
+        addTaskField.isSingleLine = true
+        addTaskField.setOnEditorActionListener { v, actionId, event ->
+            when (actionId) {
+                EditorInfo.IME_ACTION_NEXT,
+                EditorInfo.IME_ACTION_DONE -> {
+                    createItemButton.callOnClick(); true
+                }
+                EditorInfo.IME_ACTION_UNSPECIFIED -> {
+                    if (event?.keyCode == KeyEvent.KEYCODE_ENTER) {
+                        createItemButton.callOnClick()
+                        true
+                    } else false
+                }
+                else -> false
+            }
+        }
     }
 
     class TodoAdapter(private var todoItemsHolder: TodoItemsHolder) : RecyclerView.Adapter<TodoItemsViewHolder>() {
@@ -67,12 +107,12 @@ class MainActivity : AppCompatActivity() {
 
             holder.setStatusImageOnClickListener{
                 onStatusImageClickListener?.invoke(todoItem)
-                notifyDataSetChanged()
+//                notifyDataSetChanged()
             }
 
             holder.setClearButtonOnClickListener{
                 onClearBtnClickListener?.invoke(todoItem)
-                notifyDataSetChanged()
+//                notifyDataSetChanged()
             }
         }
 
@@ -111,15 +151,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setCreateItemButtonListener() {
-        createItemButton!!.setOnClickListener {
-            val input = addTaskField!!
-            if (input.text.isEmpty()) return@setOnClickListener
-            holder!!.addNewInProgressItem(input.text.toString())
-            recyclerTodoItems!!.adapter!!.notifyDataSetChanged()
-            input.setText("")
-        }
-    }
+
 
 
     override fun onDestroy() {

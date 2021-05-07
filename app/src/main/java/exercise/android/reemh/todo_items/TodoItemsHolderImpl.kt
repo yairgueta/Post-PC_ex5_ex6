@@ -13,27 +13,38 @@ class TodoItemsHolderImpl : TodoItemsHolder {
         return currentItems.toMutableList()
     }
 
-    private fun findInList(item: TodoItem): TodoItem? = currentItems.find{ other -> item == other}
+    private fun findItemAndIndex(item: TodoItem): Pair<TodoItem?, Int> {
+        val i = currentItems.indexOf(item)
+        return currentItems.getOrNull(i) to i
+    }
 
 
     override fun addNewInProgressItem(description: String) {
-        currentItems.add(TodoItem(description))
-        currentItems.sort()
+        currentItems.add(0, TodoItem(description))
+//        currentItems.sort()
     }
 
-    override fun markItemDone(item: TodoItem) {
-        findInList(item)?.isDone = true
+    private fun setStatus(item: TodoItem, _isDone: Boolean): Pair<Int, Int> {
+        val (todoItem, i) = findItemAndIndex(item)
+        todoItem!!.isDone = _isDone
         currentItems.sort()
+        val (_, newIndex) = findItemAndIndex(todoItem)
+        return i to newIndex
     }
 
-    override fun markItemInProgress(item: TodoItem) {
-        findInList(item)?.isDone = false
-        currentItems.sort()
+    override fun markItemDone(item: TodoItem): Pair<Int, Int> {
+        return setStatus(item, true)
     }
 
-    override fun deleteItem(item: TodoItem) {
-        currentItems.remove(item)
-        currentItems.sort()
+    override fun markItemInProgress(item: TodoItem): Pair<Int, Int> {
+        return setStatus(item, false)
+    }
+
+    override fun deleteItem(item: TodoItem): Int {
+        val index = currentItems.indexOf(item)
+        currentItems.removeAt(index)
+        return index
+//        currentItems.sort()
     }
 
     override fun getSize(): Int {
