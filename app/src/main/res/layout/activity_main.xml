@@ -49,13 +49,4 @@
         tools:listitem="@layout/row_todo_item"
         app:stackFromEnd="true"
         />
-
-    <!--TODO:
-         There is a UI bug.
-         the constraints of the recycler are broken:
-         if there is too much content in the recycler, the content will
-         show up below the edit-text and the button.
-         to reproduce this bug: add many todo-items to the list
-         you need to fix this UI bug!-->
-
 </androidx.constraintlayout.widget.ConstraintLayout>
