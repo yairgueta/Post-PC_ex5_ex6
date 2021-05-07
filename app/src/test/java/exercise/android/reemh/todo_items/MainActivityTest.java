@@ -1,7 +1,10 @@
 package exercise.android.reemh.todo_items;
 
+import android.content.res.Resources;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.Shadows;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
 
@@ -71,9 +75,19 @@ public class MainActivityTest extends TestCase {
 
   @Test
   public void when_userPutInputAndClicksButton_then_inputShouldBeErasedFromEditText() {
-    //    TODO: implement the test.
-    //     to set up the test, take a look at `when_userPutInputAndClicksButton_then_activityShouldCallAddItem()`
-    //     to verify, use methods such as "assertEquals(...)" or "assertTrue(...)"
+    // setup
+    String userInput = "Call my grandma today at 18:00";
+    activityController.create().visible(); // let the activity think it is being shown
+    MainActivity activityUnderTest = activityController.get();
+    EditText editText = activityUnderTest.findViewById(R.id.editTextInsertTask);
+    View fab = activityUnderTest.findViewById(R.id.buttonCreateTodoItem);
+
+    // test - mock user interactions
+    editText.setText(userInput);
+    fab.performClick();
+
+    // verify: verify that `mockHolder.addNewInProgressItem()` was called, with exactly same string
+    assertTrue(editText.getText().toString().isEmpty());
   }
 
   @Test
@@ -96,14 +110,11 @@ public class MainActivityTest extends TestCase {
   @Test
   public void when_holderSays1ItemOfTypeInProgress_then_activityShouldShow1MatchingViewInRecyclerView(){
     // setup
-
-    // when asking the `mockHolder` to get the current items, return a list with 1 item of type "in progress"
-    ArrayList<TodoItem> itemsReturnedByHolder = new ArrayList<>();
-    Mockito.when(mockHolder.getCurrentItems())
-      .thenReturn(itemsReturnedByHolder);
-    TodoItem itemInProgress = new TodoItem();
-    // TODO: customize `itemInProgress` to have type IN-PROGRESS and description "do homework"
-    itemsReturnedByHolder.add(itemInProgress);
+    TodoItem itemInProgress = new TodoItem(false, "do homework");
+    Mockito.when(mockHolder.get(0))
+      .thenReturn(itemInProgress);
+    Mockito.when(mockHolder.getSize())
+            .thenReturn(1);
 
     // test - let the activity think it is being shown
     activityController.create().visible();
@@ -119,23 +130,21 @@ public class MainActivityTest extends TestCase {
 
     // 2. verify that the shown view has a checkbox being not-checked and has a TextView showing the correct description
     View viewInRecycler = recyclerView.findViewHolderForAdapterPosition(0).itemView;
-    // TODO: implement.
-    //  use `viewInRecycler.findViewById(...)` to find the checkbox and the description subviews,
-    //  and make sure the checkbox is not checked and the TextView shows the correct description
+    ImageButton checkBox = viewInRecycler.findViewById(R.id.statusImage);
+    TextView textView = viewInRecycler.findViewById(R.id.todoDescription);
+    assertEquals(android.R.drawable.checkbox_off_background, Shadows.shadowOf(checkBox.getDrawable()).getCreatedFromResId());
+    assertEquals("do homework", textView.getText().toString());
   }
 
 
   @Test
   public void when_holderSays1ItemOfTypeDone_then_activityShouldShow1MatchingViewInRecyclerView(){
     // setup
-
-    // when asking the `mockHolder` to get the current items, return a list with 1 item of type "DONE"
-    ArrayList<TodoItem> itemsReturnedByHolder = new ArrayList<>();
-    Mockito.when(mockHolder.getCurrentItems())
-      .thenReturn(itemsReturnedByHolder);
-    TodoItem itemDone = new TodoItem();
-    // TODO: customize `itemDone` to have type DONE and description "buy tomatoes"
-    itemsReturnedByHolder.add(itemDone);
+    TodoItem itemInProgress = new TodoItem(true, "make tomatoes");
+    Mockito.when(mockHolder.get(0))
+            .thenReturn(itemInProgress);
+    Mockito.when(mockHolder.getSize())
+            .thenReturn(1);
 
     // test - let the activity think it is being shown
     activityController.create().visible();
@@ -149,10 +158,11 @@ public class MainActivityTest extends TestCase {
     assertNotNull(adapter);
     assertEquals(1, adapter.getItemCount());
 
-    // 2. verify that the shown view has a checkbox being checked and has a TextView showing the correct description
+    // 2. verify that the shown view has a checkbox being not-checked and has a TextView showing the correct description
     View viewInRecycler = recyclerView.findViewHolderForAdapterPosition(0).itemView;
-    // TODO: implement.
-    //  use `viewInRecycler.findViewById(...)` to find the checkbox and the description subviews,
-    //  and make sure the checkbox is checked and the TextView shows the correct description
+    ImageButton checkBox = viewInRecycler.findViewById(R.id.statusImage);
+    TextView textView = viewInRecycler.findViewById(R.id.todoDescription);
+    assertEquals(android.R.drawable.checkbox_on_background, Shadows.shadowOf(checkBox.getDrawable()).getCreatedFromResId());
+    assertEquals("make tomatoes", textView.getText().toString());
   }
 }

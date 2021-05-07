@@ -34,7 +34,7 @@
         app:layout_constraintEnd_toStartOf="@id/todoClearBtn"
         app:layout_constraintStart_toEndOf="@+id/statusImage"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="@tools:sample/lorem[1]" />
+        tools:text="@tools:sample/lorem" />
 
     <ImageButton
         android:id="@+id/todoClearBtn"
