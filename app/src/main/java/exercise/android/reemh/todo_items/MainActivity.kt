@@ -1,5 +1,9 @@
 package exercise.android.reemh.todo_items
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.KeyEvent
@@ -7,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
@@ -14,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.io.Serializable
 
 class MainActivity : AppCompatActivity() {
     val ITEM_HOLDER_BUNDLE_KEY = "todo_item_holder"
@@ -22,14 +28,16 @@ class MainActivity : AppCompatActivity() {
     var holder: TodoItemsHolder? = null
     lateinit var recyclerTodoItems: RecyclerView
     lateinit var addTaskField: EditText
-    lateinit var createItemButton: FloatingActionButton
-
+    lateinit var createItemButton : FloatingActionButton
+    lateinit var bcReciever : BroadcastReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (holder == null) holder = TodoItemsHolderImpl()
+        if (holder == null)
+            holder = (application as CustomApplication).itemsHolder
+        println(holder!!.getCurrentItems())
         recyclerTodoItems = findViewById(R.id.recyclerTodoItemsList)
         addTaskField = findViewById(R.id.editTextInsertTask)
         createItemButton = findViewById(R.id.buttonCreateTodoItem)
@@ -54,9 +62,26 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
         adapter.onClearBtnClickListener = {
             val i = holder!!.deleteItem(it)
             adapter.notifyItemRemoved(i)
+        }
+
+        adapter.onClickListener = { item ->
+            Intent(this, TodoItemActivity::class.java).also {
+                it.putExtra(CustomApplication.KEY_TODO_ITEM, holder?.getCurrentItems()?.indexOf(item))
+                startActivity(it)
+            }
+        }
+
+        bcReciever = RefreshHolderBroadcastReceiver(recyclerTodoItems)
+        registerReceiver(bcReciever, IntentFilter(CustomApplication.ACTION_BROADCAST_REFRESH_HOLDER))
+    }
+
+    class RefreshHolderBroadcastReceiver(val recyclerView: RecyclerView) : BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent?) {
+            recyclerView.adapter?.notifyDataSetChanged()
         }
     }
 
@@ -93,6 +118,7 @@ class MainActivity : AppCompatActivity() {
     class TodoAdapter(private var todoItemsHolder: TodoItemsHolder) : RecyclerView.Adapter<TodoItemsViewHolder>() {
         var onStatusImageClickListener: ((TodoItem) -> Unit)? = null
         var onClearBtnClickListener: ((TodoItem) -> Unit)? = null
+        var onClickListener: ((TodoItem) -> Unit)? = null
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoItemsViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.row_todo_item, parent, false)
@@ -111,6 +137,10 @@ class MainActivity : AppCompatActivity() {
             holder.setClearButtonOnClickListener{
                 onClearBtnClickListener?.invoke(todoItem)
             }
+
+            holder.setOnClickListener{
+                onClickListener?.invoke(todoItem)
+            }
         }
 
         override fun getItemCount(): Int {
@@ -119,9 +149,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    class TodoItemsViewHolder(view: View) : RecyclerView.ViewHolder(view){
+    class TodoItemsViewHolder(val view: View) : RecyclerView.ViewHolder(view){
         private var descriptionTextView : TextView = view.findViewById(R.id.todoDescription)
-        private var statusImage : ImageButton = view.findViewById(R.id.statusImage)
+        private var checkbox : CheckBox = view.findViewById(R.id.todoCheckbox)
         private var clearBtn : ImageButton = view.findViewById(R.id.todoClearBtn)
 
         fun setInProgress(){
@@ -136,23 +166,25 @@ class MainActivity : AppCompatActivity() {
             descriptionTextView.text = item.description
             if (item.isDone) setDone()
             else setInProgress()
-            statusImage.setImageResource(if (item.isDone) android.R.drawable.checkbox_on_background else android.R.drawable.checkbox_off_background)
+            checkbox.isChecked = item.isDone
         }
 
         fun setStatusImageOnClickListener(l: View.OnClickListener){
-            statusImage.setOnClickListener(l)
+            checkbox.setOnClickListener(l)
         }
 
         fun setClearButtonOnClickListener(l: View.OnClickListener){
             clearBtn.setOnClickListener(l)
         }
+
+        fun setOnClickListener(l: View.OnClickListener){
+            descriptionTextView.setOnClickListener(l)
+        }
     }
-
-
-
 
     override fun onDestroy() {
         super.onDestroy()
+        unregisterReceiver(bcReciever)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

@@ -1,7 +1,9 @@
 package exercise.android.reemh.todo_items
 
+import android.content.SharedPreferences
 import junit.framework.TestCase
 import org.junit.Test
+import org.mockito.Mockito
 import java.io.Serializable
 
 class TodoItemsHolderImplTest : TestCase() {
@@ -110,6 +112,7 @@ class TodoItemsHolderImplTest : TestCase() {
         assertEquals(2, holder2.getSize())
     }
 
+    @Test
     fun test_when_addingNewTasks_then_shouldSortThemByTime(){
         val tasks = arrayListOf("eat chicken", "make laundry", "clean history", "read a book",
                 "clean the keyboard", "print documents")
@@ -124,6 +127,7 @@ class TodoItemsHolderImplTest : TestCase() {
         assertEquals(tasks[2], item.description)
     }
 
+    @Test
     fun test_when_setTaskAsDone_then_shouldSortDown(){
         val tasks = arrayListOf("eat chicken", "make laundry", "clean history", "read a book",
                 "clean the keyboard", "print documents")
@@ -144,5 +148,27 @@ class TodoItemsHolderImplTest : TestCase() {
         expectedList.add(tasks[2])
 
         expectedList.withIndex().forEach{ (i, it) -> assertEquals(it, holder.get(i).description)}
+    }
+
+    @Test
+    fun test_listOrdering(){
+        val holder = TodoItemsHolderImpl()
+
+        for (i in 1..9){
+            holder.addNewInProgressItem(i.toString())
+        }
+
+        for ((i,t) in listOf("9","8","7","6","5","4","3","2","1").withIndex()){
+            assertEquals(t, holder.getCurrentItems().get(i).description)
+        }
+
+        var cur = holder.getCurrentItems()
+        holder.markItemDone(cur[2])
+        holder.markItemDone(cur[5])
+
+        for ((i,t) in listOf("9","8","6","5","3","2","1","7","4").withIndex()){
+            assertEquals(t, holder.getCurrentItems().get(i).description)
+        }
+
     }
 }

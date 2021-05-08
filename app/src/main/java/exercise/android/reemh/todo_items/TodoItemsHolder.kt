@@ -22,6 +22,8 @@ interface TodoItemsHolder {
     /** delete the @param item  */
     fun deleteItem(item: TodoItem): Int
 
+    fun modifyItemDescription(item: TodoItem, description: String)
+
     fun getSize() : Int
 
     fun get(i: Int) : TodoItem

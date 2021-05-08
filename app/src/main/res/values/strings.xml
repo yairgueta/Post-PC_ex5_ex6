@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">TodoItems</string>
+    <string name="edit_this_todo_item">Edit This Todo Item!</string>
+    <string name="in_progress">In Progress</string>
+    <string name="done">done</string>
+    <string name="created_label">Created: </string>
+    <string name="last_mod_label">Last Modified: </string>
+    <string name="todo_item_info_page_creation_time">%1$te %1$tb %1$tY at %1$tH:%1$tM</string>
+    <string name="todo_item_info_page_last_modified_day_or_more">%1$te %1$tb %1$tY at %1$tH:%1$tM</string>
+    <string name="todo_item_info_page_last_modified_today">Today at %1$tH:%1$tM</string>
+    <string name="todo_item_info_page_last_modified_this_hour">%1$d minutes ago</string>
+    <string name="todo_item_info_page_last_modified_one_min">1 minute ago</string>
+    <string name="todo_item_info_page_last_modified_zero_min">Right now</string>
 </resources>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TodoItemActivity">
+
+    <CheckBox
+        android:id="@+id/todoActivity_checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:button="@drawable/todo_checkbox"
+        android:buttonTint="@color/cardview_dark_background"
+        android:checked="false"
+        android:gravity="center_vertical"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:paddingHorizontal="3dp"
+        android:paddingVertical="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mainLabel" />
+
+    <EditText
+        android:id="@+id/todoItemDescription"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="18dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="start|top"
+        android:minLines="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/todoActivity_checkBox"
+        tools:text="@tools:sample/lorem/random" />
+
+    <RelativeLayout
+        android:id="@+id/timesLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/todoActivity_checkBox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/todoActivity_checkBox"
+        app:layout_constraintTop_toTopOf="@+id/todoActivity_checkBox">
+
+        <TextView
+            android:id="@+id/creationTimeLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/created_label"
+            style="@style/time_text_style"
+            />
+
+        <TextView
+            android:id="@+id/creationTimeText"
+            style="@style/time_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/todo_item_info_page_creation_time"
+            android:layout_toEndOf="@id/creationTimeLabel"
+            android:layout_marginStart="2dp"
+            />
+
+        <TextView
+            android:id="@+id/lastModifiedLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/last_mod_label"
+            style="@style/time_text_style"
+            android:layout_below="@id/creationTimeLabel"
+            />
+
+        <TextView
+            android:id="@+id/lastMoidifiedText"
+            style="@style/time_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/todo_item_info_page_last_modified_day_or_more"
+            android:layout_toEndOf="@id/lastModifiedLabel"
+            android:layout_below="@id/creationTimeText"
+            android:layout_marginStart="2dp"
+            />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/mainLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/title_bar"
+        android:backgroundTint="@color/main"
+        android:fontFamily="sans-serif-light"
+        android:paddingHorizontal="16dp"
+        android:text="@string/edit_this_todo_item"
+        android:textColor="#000000"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topTitle" />
+
+    <View
+        android:id="@+id/topTitle"
+        android:layout_width="0dp"
+        android:layout_height="12dp"
+        android:background="@color/dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

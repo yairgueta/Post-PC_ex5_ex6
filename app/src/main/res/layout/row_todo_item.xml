@@ -7,17 +7,17 @@
     android:layout_height="wrap_content"
     android:minHeight="@dimen/row_todo_item_height">
 
-    <ImageButton
-        android:id="@+id/statusImage"
+    <CheckBox
+        android:id="@+id/todoCheckbox"
         android:layout_width="@dimen/row_todo_item_height"
         android:layout_height="@dimen/row_todo_item_height"
-        android:background="#00000000"
-        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/checkbox_off_background"
-        tools:srcCompat="@android:drawable/checkbox_on_background"
+        android:minWidth="0dp"
+        android:button="@drawable/todo_checkbox"
+        android:layout_marginStart="10dp"
+        android:text="@null"
         />
 
     <TextView
@@ -32,7 +32,7 @@
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/todoClearBtn"
-        app:layout_constraintStart_toEndOf="@+id/statusImage"
+        app:layout_constraintStart_toEndOf="@+id/todoCheckbox"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@tools:sample/lorem" />
 

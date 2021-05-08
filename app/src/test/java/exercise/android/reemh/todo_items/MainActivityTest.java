@@ -2,6 +2,7 @@ package exercise.android.reemh.todo_items;
 
 import android.content.res.Resources;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -130,9 +131,9 @@ public class MainActivityTest extends TestCase {
 
     // 2. verify that the shown view has a checkbox being not-checked and has a TextView showing the correct description
     View viewInRecycler = recyclerView.findViewHolderForAdapterPosition(0).itemView;
-    ImageButton checkBox = viewInRecycler.findViewById(R.id.statusImage);
+    CheckBox checkBox = viewInRecycler.findViewById(R.id.todoCheckbox);
     TextView textView = viewInRecycler.findViewById(R.id.todoDescription);
-    assertEquals(android.R.drawable.checkbox_off_background, Shadows.shadowOf(checkBox.getDrawable()).getCreatedFromResId());
+    assertFalse(checkBox.isChecked());
     assertEquals("do homework", textView.getText().toString());
   }
 
@@ -160,9 +161,9 @@ public class MainActivityTest extends TestCase {
 
     // 2. verify that the shown view has a checkbox being not-checked and has a TextView showing the correct description
     View viewInRecycler = recyclerView.findViewHolderForAdapterPosition(0).itemView;
-    ImageButton checkBox = viewInRecycler.findViewById(R.id.statusImage);
+    CheckBox checkBox = viewInRecycler.findViewById(R.id.todoCheckbox);
     TextView textView = viewInRecycler.findViewById(R.id.todoDescription);
-    assertEquals(android.R.drawable.checkbox_on_background, Shadows.shadowOf(checkBox.getDrawable()).getCreatedFromResId());
+    assertTrue(checkBox.isChecked());
     assertEquals("make tomatoes", textView.getText().toString());
   }
 }
